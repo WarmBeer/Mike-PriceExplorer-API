@@ -6,7 +6,7 @@ function getPrice(req, res) {
     const currency = 'BTC';
     const query =
         `
-        SELECT date, currency, eur, usd, exchange FROM prices 
+        SELECT date, currency, price, priceCurrency, exchange FROM prices 
         WHERE currency = '${currency}' 
         AND date BETWEEN ${startDate} AND ${endDate} 
         `;
