@@ -1,4 +1,4 @@
-const db = require('../db');
+const db = require('../dao/db');
 
 function getPrice(req, res) {
     const startDate = req.query.start || 0;

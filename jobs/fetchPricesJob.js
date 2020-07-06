@@ -1,6 +1,5 @@
-const fetch = require('node-fetch');
 const schedule = require('node-schedule');
-const db = require('../db');
+const pairs = require('../pairs/pairs');
 
 function getDailyPrices() {
     let thisDate = new Date();
@@ -8,43 +7,16 @@ function getDailyPrices() {
     console.log('Getting prices for datetime:', datetime.toUTCString());
     datetime = datetime.getTime();
 
-    getBitfinexPrice([datetime], 'BTC', 'EUR', 1);
-}
-
-function getBitfinexPrice(dateRange, currency, priceCurrency, limit) {
-    const exchange = 'Bitfinex';
-    const startDate = dateRange[0];
-    const endDate = dateRange[1] || startDate + 1;
-    limit = limit || 1;
-    fetch(`https://api-pub.bitfinex.com/v2/candles/trade:1D:t${currency}${priceCurrency}/hist?limit=${limit}&sort=1&start=${startDate}&end=${endDate}`)
-        .then((res) => res.json())
-        .then((res) => {
-            console.log(res);
-            if (dateRange[1]) {
-
-            } else {
-                insertPrice(startDate, currency, res[0][2], priceCurrency, exchange);
-            }
+    pairs.forEach((pair) => {
+        pair.exchanges.forEach((exchange) => {
+            exchange.handler.getPrice([datetime], pair.currency, pair.priceCurrency);
         });
-}
-
-function insertPrice(date, currency, price, priceCurrency, exchange) {
-    const query =
-        `
-        INSERT INTO prices 
-        (date, currency, price, priceCurrency, exchange) 
-        VALUES (${date}, '${currency}', ${price}, '${priceCurrency}', '${exchange}')
-        `;
-
-    db.query(query, function(err, rows) {
-        if (err) {
-            console.error(err);
-        }
     });
 }
 
 function startJob() {
     getDailyPrices();
+
     /*
     const rule = new schedule.RecurrenceRule();
     rule.hour = 3;
