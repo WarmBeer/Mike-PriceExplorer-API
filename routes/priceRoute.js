@@ -6,7 +6,7 @@ module.exports = function(app){
 
   const service = require('../services/priceService');
 
-  app.get('/price', (req, res) => {
+  app.get('/price/:currency', (req, res) => {
     service.getPrice(req, res);
   });
 

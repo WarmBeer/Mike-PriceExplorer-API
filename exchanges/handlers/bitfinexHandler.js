@@ -1,3 +1,7 @@
+/*
+* No longer needed since Bitfinex is supported by the universalHandler
+ */
+
 const fetch = require('node-fetch');
 const dao = require('../../dao/dao');
 
@@ -10,10 +14,10 @@ function getPrice(dateRange, currency, priceCurrency, limit) {
         .then((res) => res.json())
         .then((res) => {
             console.log(res);
-            if (dateRange[1]) {
-
-            } else {
-                dao.insertPrice(startDate, currency, res[0][2], priceCurrency, exchange);
+            if (res.length > 0) {
+                res.forEach((row) => {
+                    dao.insertPrice(row[0], currency, row[2], priceCurrency, exchange);
+                });
             }
         });
 }
