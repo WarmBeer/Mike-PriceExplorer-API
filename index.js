@@ -30,4 +30,4 @@ require('./routes/priceRoute')(app);
 
 // Start job
 const pricesJob = require('./jobs/fetchPricesJob');
-//pricesJob.startJob();
+pricesJob.startJob();

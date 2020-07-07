@@ -5,7 +5,7 @@ function getPrice(req, res) {
     const priceCurrency = req.query.priceCurrency || 'EUR';
     const exchange = req.query.exchange || '%';
     const startDate = req.query.startDate || 0;
-    const endDate = req.query.endDate || 9999999999999;
+    const endDate = req.query.endDate || startDate;
     const page = req.query.page || 1;
     const query =
         `
@@ -14,8 +14,8 @@ function getPrice(req, res) {
         AND priceCurrency = '${priceCurrency}'
         AND exchange LIKE '${exchange}'
         AND date BETWEEN ${startDate} AND ${endDate} 
-        ORDER BY date DESC
-        LIMIT 100
+        ORDER BY date DESC, price ASC
+        LIMIT 2000
         OFFSET ${100 * (page - 1)}
         `;
 
@@ -26,7 +26,6 @@ function getPrice(req, res) {
         AND priceCurrency = '${priceCurrency}'
         AND exchange LIKE '${exchange}'
         AND date BETWEEN ${startDate} AND ${endDate} 
-        ORDER BY date DESC
         `;
 
     try {
@@ -64,24 +63,6 @@ function getPrice(req, res) {
         });
     }
 }
-
-
-/*
-function groupResultsByDate(data) {
-    let results = [];
-    data.forEach((row) => {
-        row = JSON.parse(JSON.stringify(row));
-        const key = new Date(row['date']).toUTCString();
-        if (results.includes(key, 0)) {
-            results[key].push(row);
-        } else {
-            results[key] = [];
-            results[key].push(row);
-        }
-    });
-    return results;
-}
-*/
 
 module.exports = {
     getPrice,

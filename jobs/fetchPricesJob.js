@@ -16,15 +16,18 @@ function getHistoricPrices() {
     getPrices(startDate);
 }
 
+function getDailyPrices() {
+    const thisDate = new Date();
+    const startDate = new Date(Date.UTC(thisDate.getUTCFullYear(), thisDate.getUTCMonth(), thisDate.getUTCDate()));
+    getPrices(startDate);
+}
+
 function startJob() {
     getHistoricPrices(); // Fill Database with all historic data
-
     const rule = new schedule.RecurrenceRule();
     rule.hour = 3; // Make scheduler execute every day at 03:00
     schedule.scheduleJob(rule, function(){
-        const thisDate = new Date();
-        const startDate = new Date(Date.UTC(thisDate.getUTCFullYear(), thisDate.getUTCMonth(), thisDate.getUTCDate()));
-        getPrices(startDate); // Get price data for today
+        getDailyPrices(); // Get price data for today
     });
 }
 
