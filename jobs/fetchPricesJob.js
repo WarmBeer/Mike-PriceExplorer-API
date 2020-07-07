@@ -26,6 +26,8 @@ function startJob() {
     getHistoricPrices(); // Fill Database with all historic data
     const rule = new schedule.RecurrenceRule();
     rule.hour = 3; // Make scheduler execute every day at 03:00
+    rule.minute = 0;
+    rule.second = 0;
     schedule.scheduleJob(rule, function(){
         getDailyPrices(); // Get price data for today
     });
